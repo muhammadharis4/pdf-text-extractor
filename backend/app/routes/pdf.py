@@ -10,7 +10,10 @@ async def extract_pdf_text(file: UploadFile = File(...)):
     pdf_bytes = await file.read()
     PDFService.validate_pdf(file.filename, len(pdf_bytes))
     result = await PDFService.extract_text(pdf_bytes)
-    
+
+    # Clean up memory
+    del pdf_bytes
+
     return PDFExtractResponse(
         success=True,
         text=result["text"],
