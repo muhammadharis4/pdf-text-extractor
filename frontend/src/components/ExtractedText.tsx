@@ -9,13 +9,16 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import DownloadIcon from "@mui/icons-material/Download";
 import type { ExtractResponse } from "../types";
 
 interface Props {
     result: ExtractResponse;
+    onReset: () => void;
 }
 
-export default function ExtractedText({ result }: Props) {
+export default function ExtractedText({ result, onReset }: Props) {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -24,10 +27,19 @@ export default function ExtractedText({ result }: Props) {
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const handleDownload = () => {
+        const blob = new Blob([result.text], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = result.filename.replace(".pdf", ".txt");
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     return (
         <Card elevation={2} sx={{ mt: 3 }}>
             <CardContent>
-                {/* Header */}
                 <Box
                     display="flex"
                     justifyContent="space-between"
@@ -41,20 +53,41 @@ export default function ExtractedText({ result }: Props) {
                             {result.pages === 1 ? "page" : "pages"}
                         </Typography>
                     </Box>
-                    <Button
-                        variant="outlined"
-                        size="small"
-                        startIcon={copied ? <CheckIcon /> : <ContentCopyIcon />}
-                        onClick={handleCopy}
-                        color={copied ? "success" : "primary"}
-                    >
-                        {copied ? "Copied!" : "Copy Text"}
-                    </Button>
+                    <Box display="flex" gap={1}>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={
+                                copied ? <CheckIcon /> : <ContentCopyIcon />
+                            }
+                            onClick={handleCopy}
+                            color={copied ? "success" : "primary"}
+                        >
+                            {copied ? "Copied!" : "Copy Text"}
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<DownloadIcon />}
+                            onClick={handleDownload}
+                            color="primary"
+                        >
+                            Download .txt
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<CloseIcon />}
+                            onClick={onReset}
+                            color="error"
+                        >
+                            Close
+                        </Button>
+                    </Box>
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
 
-                {/* Extracted Text */}
                 <Box
                     sx={{
                         maxHeight: 400,

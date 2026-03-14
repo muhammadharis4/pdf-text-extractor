@@ -66,7 +66,12 @@ export default function App() {
                         loading={loading}
                         progress={progress}
                     />
-                    {result && <ExtractedText result={result} />}
+                    {result && (
+                        <ExtractedText
+                            result={result}
+                            onReset={() => setResult(null)}
+                        />
+                    )}
                 </Box>
             </Container>
         </>
