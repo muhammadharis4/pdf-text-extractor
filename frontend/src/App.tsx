@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Container, Box, Typography } from "@mui/material";
+import TopNav from "./components/TopNav";
 import FileUpload from "./components/FileUpload";
 import ExtractedText from "./components/ExtractedText";
 import ErrorAlert from "./components/ErrorAlert";
@@ -31,35 +32,35 @@ export default function App() {
     };
 
     return (
-        <Container maxWidth="md">
-            <Box py={6}>
-                {/* Header */}
-                <Typography
-                    variant="h4"
-                    fontWeight={700}
-                    gutterBottom
-                    textAlign="center"
-                >
-                    PDF Text Extractor
-                </Typography>
-                <Typography
-                    variant="body1"
-                    color="text.secondary"
-                    textAlign="center"
-                    mb={4}
-                >
-                    Upload a PDF and extract its text content instantly
-                </Typography>
+        <>
+            <TopNav />
+            <Container maxWidth="md">
+                <Box py={6}>
+                    <Typography
+                        variant="h4"
+                        fontWeight={700}
+                        gutterBottom
+                        textAlign="center"
+                    >
+                        PDF Text Extractor
+                    </Typography>
+                    <Typography
+                        variant="body1"
+                        color="text.secondary"
+                        textAlign="center"
+                        mb={4}
+                    >
+                        Upload a PDF and extract its text content instantly
+                    </Typography>
 
-                {/* Error */}
-                <ErrorAlert message={error} onClose={() => setError(null)} />
-
-                {/* Upload */}
-                <FileUpload onUpload={handleUpload} loading={loading} />
-
-                {/* Results */}
-                {result && <ExtractedText result={result} />}
-            </Box>
-        </Container>
+                    <ErrorAlert
+                        message={error}
+                        onClose={() => setError(null)}
+                    />
+                    <FileUpload onUpload={handleUpload} loading={loading} />
+                    {result && <ExtractedText result={result} />}
+                </Box>
+            </Container>
+        </>
     );
 }
