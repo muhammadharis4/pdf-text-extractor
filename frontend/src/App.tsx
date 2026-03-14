@@ -9,6 +9,7 @@ import type { ExtractResponse } from "./types";
 
 export default function App() {
     const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
     const [result, setResult] = useState<ExtractResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -16,9 +17,10 @@ export default function App() {
         setLoading(true);
         setError(null);
         setResult(null);
+        setProgress(0);
 
         try {
-            const data = await extractPdfText(file);
+            const data = await extractPdfText(file, setProgress);
             setResult(data);
         } catch (err: unknown) {
             if (err instanceof Error) {
@@ -28,6 +30,7 @@ export default function App() {
             }
         } finally {
             setLoading(false);
+            setProgress(0);
         }
     };
 
@@ -61,6 +64,7 @@ export default function App() {
                         onUpload={handleUpload}
                         onError={setError}
                         loading={loading}
+                        progress={progress}
                     />
                     {result && <ExtractedText result={result} />}
                 </Box>
