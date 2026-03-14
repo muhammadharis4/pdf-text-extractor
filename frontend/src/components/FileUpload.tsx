@@ -94,7 +94,12 @@ export default function FileUpload({
                         </Typography>
                         <Button variant="contained" component="label">
                             Browse File
-                            <input type="file" hidden onChange={handleChange} />
+                            <input
+                                type="file"
+                                hidden
+                                accept="application/pdf"
+                                onChange={handleChange}
+                            />
                         </Button>
                         <Typography
                             variant="caption"
