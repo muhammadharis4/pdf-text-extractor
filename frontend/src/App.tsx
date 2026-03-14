@@ -1,30 +1,64 @@
 import { useState } from "react";
-import { Container, Box } from "@mui/material";
+import { Container, Box, Typography } from "@mui/material";
 import FileUpload from "./components/FileUpload";
 import ExtractedText from "./components/ExtractedText";
 import ErrorAlert from "./components/ErrorAlert";
+import { extractPdfText } from "./services/api";
 import type { ExtractResponse } from "./types";
 
-const MOCK_RESULT: ExtractResponse = {
-    success: true,
-    filename: "sample.pdf",
-    pages: 3,
-    text: "This is extracted text from the PDF.\n\nPage 2 content here.\n\nPage 3 content here.",
-};
-
 export default function App() {
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState<ExtractResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const handleUpload = (file: File) => {
-        console.log("Uploaded file:", file.name);
+    const handleUpload = async (file: File) => {
+        setLoading(true);
+        setError(null);
+        setResult(null);
+
+        try {
+            const data = await extractPdfText(file);
+            setResult(data);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Something went wrong. Please try again.");
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <Container maxWidth="md">
             <Box py={6}>
+                {/* Header */}
+                <Typography
+                    variant="h4"
+                    fontWeight={700}
+                    gutterBottom
+                    textAlign="center"
+                >
+                    PDF Text Extractor
+                </Typography>
+                <Typography
+                    variant="body1"
+                    color="text.secondary"
+                    textAlign="center"
+                    mb={4}
+                >
+                    Upload a PDF and extract its text content instantly
+                </Typography>
+
+                {/* Error */}
                 <ErrorAlert message={error} onClose={() => setError(null)} />
-                <FileUpload onUpload={handleUpload} loading={false} />
-                <ExtractedText result={MOCK_RESULT} />
+
+                {/* Upload */}
+                <FileUpload onUpload={handleUpload} loading={loading} />
+
+                {/* Results */}
+                {result && <ExtractedText result={result} />}
             </Box>
         </Container>
     );
