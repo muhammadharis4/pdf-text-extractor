@@ -1,28 +1,41 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Box, Button, Typography, CircularProgress } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 
+const MAX_SIZE_MB = 10;
+const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
 interface Props {
     onUpload: (file: File) => void;
+    onError: (message: string) => void;
     loading: boolean;
 }
 
-export default function FileUpload({ onUpload, loading }: Props) {
+export default function FileUpload({ onUpload, onError, loading }: Props) {
     const [dragging, setDragging] = useState(false);
 
-    const handleDrop = useCallback(
-        (e: React.DragEvent) => {
-            e.preventDefault();
-            setDragging(false);
-            const file = e.dataTransfer.files[0];
-            if (file?.type === "application/pdf") onUpload(file);
-        },
-        [onUpload],
-    );
+    const validate = (file: File): boolean => {
+        if (file.type !== "application/pdf") {
+            onError("Only PDF files are supported.");
+            return false;
+        }
+        if (file.size > MAX_SIZE_BYTES) {
+            onError(`File is too large. Max size is ${MAX_SIZE_MB}MB.`);
+            return false;
+        }
+        return true;
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        setDragging(false);
+        const file = e.dataTransfer.files[0];
+        if (file && validate(file)) onUpload(file);
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) onUpload(file);
+        if (file && validate(file)) onUpload(file);
     };
 
     return (
@@ -75,7 +88,7 @@ export default function FileUpload({ onUpload, loading }: Props) {
                         color="text.secondary"
                         mt={2}
                     >
-                        Max file size: 10MB
+                        Max file size: {MAX_SIZE_MB}MB · PDF only
                     </Typography>
                 </>
             )}
