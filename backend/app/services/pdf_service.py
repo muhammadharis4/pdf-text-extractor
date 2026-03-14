@@ -1,4 +1,4 @@
-import PyPDF2
+from pypdf import PdfReader
 from io import BytesIO
 from fastapi import HTTPException
 from app.config import settings
@@ -26,7 +26,7 @@ class PDFService:
     async def extract_text(pdf_bytes: bytes) -> dict:
         try:
             logger.info("Starting PDF text extraction")
-            reader = PyPDF2.PdfReader(BytesIO(pdf_bytes))
+            reader = PdfReader(BytesIO(pdf_bytes))
             text_parts = [page.extract_text() for page in reader.pages]
             logger.info(f"Extraction complete: {len(reader.pages)} pages processed")
             
