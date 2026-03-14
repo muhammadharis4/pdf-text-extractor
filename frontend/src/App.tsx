@@ -57,7 +57,11 @@ export default function App() {
                         message={error}
                         onClose={() => setError(null)}
                     />
-                    <FileUpload onUpload={handleUpload} loading={loading} />
+                    <FileUpload
+                        onUpload={handleUpload}
+                        onError={setError}
+                        loading={loading}
+                    />
                     {result && <ExtractedText result={result} />}
                 </Box>
             </Container>
