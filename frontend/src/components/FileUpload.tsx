@@ -5,8 +5,10 @@ import {
     Typography,
     CircularProgress,
     LinearProgress,
+    Chip,
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 const MAX_SIZE_MB = 10;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
@@ -25,34 +27,41 @@ export default function FileUpload({
     progress,
 }: Props) {
     const [dragging, setDragging] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    const formatSize = (bytes: number) => {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
+
+    const validate = (file: File): boolean => {
+        if (file.type !== "application/pdf") {
+            onError("Only PDF files are supported.");
+            return false;
+        }
+        if (file.size > MAX_SIZE_BYTES) {
+            onError(`File too large. Max size is ${MAX_SIZE_MB}MB.`);
+            return false;
+        }
+        return true;
+    };
 
     const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
         setDragging(false);
         const file = e.dataTransfer.files[0];
         if (!file) return;
-        if (file.type !== "application/pdf") {
-            onError("Only PDF files are supported.");
-            return;
-        }
-        if (file.size > MAX_SIZE_BYTES) {
-            onError(`File too large. Max size is ${MAX_SIZE_MB}MB.`);
-            return;
-        }
+        if (!validate(file)) return;
+        setSelectedFile(file);
         onUpload(file);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        if (file.type !== "application/pdf") {
-            onError("Only PDF files are supported.");
-            return;
-        }
-        if (file.size > MAX_SIZE_BYTES) {
-            onError(`File too large. Max size is ${MAX_SIZE_MB}MB.`);
-            return;
-        }
+        if (!validate(file)) return;
+        setSelectedFile(file);
         onUpload(file);
     };
 
@@ -109,6 +118,17 @@ export default function FileUpload({
                         >
                             Max file size: {MAX_SIZE_MB}MB · PDF only
                         </Typography>
+
+                        {/* Selected File Display */}
+                        {selectedFile && (
+                            <Chip
+                                icon={<InsertDriveFileIcon />}
+                                label={`${selectedFile.name} · ${formatSize(selectedFile.size)}`}
+                                color="primary"
+                                variant="outlined"
+                                sx={{ mt: 2 }}
+                            />
+                        )}
                     </>
                 )}
             </Box>
