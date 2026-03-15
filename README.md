@@ -97,18 +97,31 @@ pytest
 pdf-text-extractor/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml              # GitHub Actions CI pipeline
-├── frontend/                   # React app (TypeScript + Material-UI)
-│   ├── src/
-│   ├── .env.local              # env variables (e.g. VITE_API_URL=http://localhost:3000)
-│   ├── nginx.conf              # nginx config for routing & reverse proxy
+│       └── ci.yml                  # GitHub Actions CI pipeline
+├── frontend/                       # React app (TypeScript + Material-UI)
+│   ├── public/                     # Static assets
+│   ├── src/                        # React source code
+│   ├── .dockerignore
+│   ├── .env.local                  # Example env file for local dev
+│   ├── eslint.config.js            # ESLint configuration
+│   ├── index.html                  # HTML entry point
+│   ├── nginx.conf                  # nginx routing & reverse proxy config
+│   ├── package.json
+│   ├── tsconfig.json               # TypeScript configuration
+│   ├── vite.config.ts              # Vite configuration
 │   └── Dockerfile
-├── backend/                    # FastAPI app (Python)
+├── backend/                        # FastAPI app (Python)
 │   ├── app/
-│   │   ├── main.py             # API entry point & routes
-│   │   ├── extractor.py        # PyMuPDF standard extraction logic
-│   │   └── ocr.py              # Tesseract OCR extraction logic
-│   ├── requirements.txt        # pytesseract, Pillow, pymupdf, fastapi...
+│   │   ├── routes/                 # API route handlers
+│   │   ├── schemas/                # Pydantic request/response models
+│   │   ├── services/               # Business logic (extraction, OCR)
+│   │   ├── config.py               # App settings & environment variables
+│   │   ├── logger.py               # Logging configuration
+│   │   └── main.py                 # API entry point & middleware
+│   ├── tests/                      # pytest test suite
+│   ├── conftest.py                 # pytest fixtures & configuration
+│   ├── requirements.txt            # Python dependencies
+│   ├── .dockerignore
 │   └── Dockerfile
 ├── docker-compose.yml
 └── README.md
