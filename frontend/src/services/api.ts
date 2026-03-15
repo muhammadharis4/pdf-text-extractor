@@ -7,7 +7,7 @@ import type { ExtractResponse } from "../types";
  * - extractPdfText: Extract text from a PDF file, with optional OCR.
  */
 const api = axios.create({
-    baseURL: "/api",
+    baseURL: "http://localhost:3000/api",
 });
 
 /**

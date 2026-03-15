@@ -17,6 +17,9 @@ export default function App() {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [result, setResult] = useState<ExtractResponse | null>(null);
+    const [extractMode, setExtractMode] = useState<"standard" | "ocr">(
+        "standard",
+    ); // ✅ added
     const [snackbar, setSnackbar] = useState<SnackbarState>({
         open: false,
         message: "",
@@ -33,7 +36,11 @@ export default function App() {
         setProgress(0);
 
         try {
-            const data = await extractPdfText(file, setProgress);
+            const data = await extractPdfText(
+                file,
+                setProgress,
+                extractMode === "ocr",
+            );
             setResult(data);
             showSnackbar("Text extracted successfully!", "success");
         } catch (err: unknown) {
@@ -80,6 +87,8 @@ export default function App() {
                         onError={(msg) => showSnackbar(msg, "error")}
                         loading={loading}
                         progress={progress}
+                        extractMode={extractMode}
+                        onExtractModeChange={setExtractMode}
                     />
                     {result && (
                         <ExtractedText result={result} onReset={handleReset} />

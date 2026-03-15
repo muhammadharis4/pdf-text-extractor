@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import ExtractModeToggle from "./ExtractModeToggle";
 
 const MAX_SIZE_MB = 10;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
@@ -18,6 +19,8 @@ interface Props {
     onError: (message: string) => void;
     loading: boolean;
     progress: number;
+    extractMode: "standard" | "ocr";
+    onExtractModeChange: (mode: "standard" | "ocr") => void;
 }
 
 export default function FileUpload({
@@ -25,6 +28,8 @@ export default function FileUpload({
     onError,
     loading,
     progress,
+    extractMode,
+    onExtractModeChange,
 }: Props) {
     const [dragging, setDragging] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -67,6 +72,13 @@ export default function FileUpload({
 
     return (
         <Box>
+            {/* Extraction Mode Toggle */}
+            <ExtractModeToggle
+                value={extractMode}
+                onChange={onExtractModeChange}
+                disabled={loading}
+            />
+            {/* File Upload Area */}
             <Box
                 onDragOver={(e) => {
                     e.preventDefault();
@@ -119,7 +131,6 @@ export default function FileUpload({
                             Max file size: {MAX_SIZE_MB}MB · PDF only
                         </Typography>
 
-                        {/* Selected File Display */}
                         {selectedFile && (
                             <Chip
                                 icon={<InsertDriveFileIcon />}
@@ -133,7 +144,6 @@ export default function FileUpload({
                 )}
             </Box>
 
-            {/* Progress Bar */}
             {loading && (
                 <Box mt={2}>
                     <LinearProgress variant="determinate" value={progress} />
@@ -144,7 +154,10 @@ export default function FileUpload({
                         display="block"
                         textAlign="center"
                     >
-                        Uploading... {progress}%
+                        {extractMode === "ocr"
+                            ? "Processing OCR..."
+                            : "Uploading..."}{" "}
+                        {progress}%
                     </Typography>
                 </Box>
             )}
