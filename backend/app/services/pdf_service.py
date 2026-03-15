@@ -47,7 +47,7 @@ class PDFService:
     async def extract_text_ocr(pdf_bytes: bytes) -> dict:
         try:
             logger.info("Starting PDF text extraction (OCR)")
-            doc = fitz.open(stream=pdf_bytes, filetype="pdf")  # ✅ pymupdf, no poppler needed
+            doc = fitz.open(stream=pdf_bytes, filetype="pdf")
             text_parts = []
 
             for page in doc:

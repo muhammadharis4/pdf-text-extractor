@@ -82,7 +82,7 @@ export default function FileUpload({
         onUpload(file);
     };
 
-    // ✅ uploading = file bytes being sent | processing = backend working
+    // uploading = file bytes being sent | processing = backend working
     const isUploading = loading && progress < 100;
     const isProcessing = loading && progress >= 100;
 
@@ -113,7 +113,7 @@ export default function FileUpload({
                     cursor: "pointer",
                 }}
             >
-                {/* ✅ Processing state — spinner + message */}
+                {/* Processing state — spinner + message */}
                 {isProcessing ? (
                     <Box
                         display="flex"
@@ -131,11 +131,11 @@ export default function FileUpload({
                             Please wait while we process your PDF
                         </Typography>
                     </Box>
-                ) : // ✅ Uploading state — just show spinner, bar is below
+                ) : // Uploading state — just show spinner, bar is below
                 isUploading ? (
                     <CircularProgress />
                 ) : (
-                    // ✅ Idle state — normal upload UI
+                    // Idle state — normal upload UI
                     <>
                         <UploadFileIcon
                             sx={{ fontSize: 48, color: "#1976d2", mb: 2 }}

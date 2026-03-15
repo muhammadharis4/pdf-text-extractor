@@ -19,7 +19,7 @@ export default function App() {
     const [result, setResult] = useState<ExtractResponse | null>(null);
     const [extractMode, setExtractMode] = useState<"standard" | "ocr">(
         "standard",
-    ); // ✅ added
+    );
     const [snackbar, setSnackbar] = useState<SnackbarState>({
         open: false,
         message: "",
