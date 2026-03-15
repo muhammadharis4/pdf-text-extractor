@@ -3,8 +3,11 @@ from io import BytesIO
 from fastapi import HTTPException
 from app.config import settings
 from app.logger import get_logger
+import pytesseract
+from pdf2image import convert_from_bytes
 
 logger = get_logger(__name__)
+
 
 class PDFService:
     @staticmethod
@@ -21,15 +24,15 @@ class PDFService:
                 status_code=413,
                 detail=f"File too large. Maximum size is {settings.MAX_FILE_SIZE / 1024 / 1024}MB"
             )
-    
+
     @staticmethod
     async def extract_text(pdf_bytes: bytes) -> dict:
         try:
-            logger.info("Starting PDF text extraction")
+            logger.info("Starting PDF text extraction (pypdf)")
             reader = PdfReader(BytesIO(pdf_bytes))
             text_parts = [page.extract_text() for page in reader.pages]
             logger.info(f"Extraction complete: {len(reader.pages)} pages processed")
-            
+
             return {
                 "text": "\n".join(text_parts).strip(),
                 "pages": len(reader.pages)
@@ -37,3 +40,19 @@ class PDFService:
         except Exception as e:
             logger.error(f"PDF extraction failed: {str(e)}")
             raise HTTPException(status_code=422, detail=f"Error processing PDF: {str(e)}")
+
+    @staticmethod
+    async def extract_text_ocr(pdf_bytes: bytes) -> dict:
+        try:
+            logger.info("Starting PDF text extraction (OCR)")
+            images = convert_from_bytes(pdf_bytes)
+            text_parts = [pytesseract.image_to_string(image) for image in images]
+            logger.info(f"OCR extraction complete: {len(images)} pages processed")
+
+            return {
+                "text": "\n".join(text_parts).strip(),
+                "pages": len(images)
+            }
+        except Exception as e:
+            logger.error(f"OCR extraction failed: {str(e)}")
+            raise HTTPException(status_code=422, detail=f"Error processing PDF with OCR: {str(e)}")
