@@ -70,6 +70,10 @@ export default function FileUpload({
         onUpload(file);
     };
 
+    // ✅ uploading = file bytes being sent | processing = backend working
+    const isUploading = loading && progress < 100;
+    const isProcessing = loading && progress >= 100;
+
     return (
         <Box>
             {/* Extraction Mode Toggle */}
@@ -78,6 +82,7 @@ export default function FileUpload({
                 onChange={onExtractModeChange}
                 disabled={loading}
             />
+
             {/* File Upload Area */}
             <Box
                 onDragOver={(e) => {
@@ -96,9 +101,29 @@ export default function FileUpload({
                     cursor: "pointer",
                 }}
             >
-                {loading ? (
+                {/* ✅ Processing state — spinner + message */}
+                {isProcessing ? (
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        gap={2}
+                    >
+                        <CircularProgress size={48} />
+                        <Typography variant="body1" fontWeight={500}>
+                            {extractMode === "ocr"
+                                ? "Running OCR, this may take a moment..."
+                                : "Extracting text..."}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                            Please wait while we process your PDF
+                        </Typography>
+                    </Box>
+                ) : // ✅ Uploading state — just show spinner, bar is below
+                isUploading ? (
                     <CircularProgress />
                 ) : (
+                    // ✅ Idle state — normal upload UI
                     <>
                         <UploadFileIcon
                             sx={{ fontSize: 48, color: "#1976d2", mb: 2 }}
@@ -144,7 +169,8 @@ export default function FileUpload({
                 )}
             </Box>
 
-            {loading && (
+            {/* Uploading progress bar for file upload */}
+            {isUploading && (
                 <Box mt={2}>
                     <LinearProgress variant="determinate" value={progress} />
                     <Typography
@@ -154,10 +180,25 @@ export default function FileUpload({
                         display="block"
                         textAlign="center"
                     >
+                        Uploading... {progress}%
+                    </Typography>
+                </Box>
+            )}
+
+            {/* Processing bar for backend processing */}
+            {isProcessing && (
+                <Box mt={2}>
+                    <LinearProgress variant="indeterminate" />
+                    <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        mt={0.5}
+                        display="block"
+                        textAlign="center"
+                    >
                         {extractMode === "ocr"
-                            ? "Processing OCR..."
-                            : "Uploading..."}{" "}
-                        {progress}%
+                            ? "OCR processing..."
+                            : "Processing PDF..."}
                     </Typography>
                 </Box>
             )}
