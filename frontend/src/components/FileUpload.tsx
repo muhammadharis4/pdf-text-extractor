@@ -11,9 +11,11 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ExtractModeToggle from "./ExtractModeToggle";
 
+// Constants for file validation
 const MAX_SIZE_MB = 10;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
+// Interface for FileUpload component props
 interface Props {
     onUpload: (file: File) => void;
     onError: (message: string) => void;
@@ -23,6 +25,16 @@ interface Props {
     onExtractModeChange: (mode: "standard" | "ocr") => void;
 }
 
+/**
+ * FileUpload component for handling PDF uploads with drag-and-drop and file selection.
+ * @param onUpload Callback when a file is selected and validated
+ * @param onError Callback for validation errors
+ * @param loading Indicates if an upload or processing is in progress
+ * @param progress Upload progress percentage (0-100)
+ * @param extractMode Current extraction mode ("standard" or "ocr")
+ * @param onExtractModeChange Callback to change the extraction mode
+ * @returns
+ */
 export default function FileUpload({
     onUpload,
     onError,

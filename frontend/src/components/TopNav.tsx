@@ -1,6 +1,10 @@
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
+/**
+ * TopNav component for displaying the application title and logo in the navigation bar.
+ * @returns
+ */
 export default function TopNav() {
     return (
         <AppBar

@@ -13,11 +13,18 @@ import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 import type { ExtractResponse } from "../types";
 
+// Interface for ExtractedText component props
 interface Props {
     result: ExtractResponse;
     onReset: () => void;
 }
 
+/**
+ * ExtractedText component to display the extracted text from the PDF along with options to copy, download, or reset.
+ * @param result The result object containing filename, pages, and extracted text
+ * @param onReset Callback function to reset the view and allow new uploads
+ * @returns
+ */
 export default function ExtractedText({ result, onReset }: Props) {
     const [copied, setCopied] = useState(false);
 

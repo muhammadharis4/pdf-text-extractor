@@ -1,5 +1,6 @@
 import { Snackbar, Alert } from "@mui/material";
 
+// Interface for AppSnackbar component props
 interface Props {
     open: boolean;
     message: string;
@@ -7,6 +8,14 @@ interface Props {
     onClose: () => void;
 }
 
+/**
+ * AppSnackbar component for displaying success and error messages in a consistent manner.
+ * @param open Controls whether the snackbar is visible
+ * @param message The message to display in the snackbar
+ * @param severity The severity level of the message ("success" or "error")
+ * @param onClose Callback function to close the snackbar
+ * @returns
+ */
 export default function AppSnackbar({
     open,
     message,
