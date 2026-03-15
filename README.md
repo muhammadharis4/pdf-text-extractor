@@ -2,6 +2,8 @@
 
 A web application to extract text content from PDF files, with optional OCR support for scanned documents.
 
+![CI](https://github.com/muhammadharis4/pdf-text-extractor/actions/workflows/ci.yml/badge.svg)
+
 ## Features
 
 - Upload PDF via drag-and-drop or file browser
@@ -10,33 +12,39 @@ A web application to extract text content from PDF files, with optional OCR supp
 - Copy or download extracted text as `.txt`
 - Fully containerized with Docker
 
+## Live Demo
+
+- **Frontend:** https://pdf-text-extractor-nu.vercel.app
+- **Backend API:** https://your-railway-url.up.railway.app/docs
+
 ## Tech Stack
 
 | Layer          | Technology                              |
 | -------------- | --------------------------------------- |
 | Frontend       | React, TypeScript, Material-UI          |
-| Backend        | FastAPI, Python                         |
+| Backend        | FastAPI, Python 3.14                    |
 | OCR            | Tesseract, PyMuPDF, pytesseract, Pillow |
 | Infrastructure | Docker, Docker Compose, nginx           |
+| Runtime        | Node 24.14 (Alpine), Python 3.14 (slim)    |
 
 ## Prerequisites
 
 - **Docker & Docker Compose** _(recommended — no manual installs needed)_
 - **OR** if running locally without Docker:
-    - Python 3.11+
-    - Node.js 20+
-    - Tesseract OCR installed on your system:
-        - **Windows:** [Download installer](https://github.com/UB-Mannheim/tesseract/wiki)
-        - **macOS:** `brew install tesseract`
-        - **Linux:** `sudo apt install tesseract-ocr`
+  - Python 3.13+
+  - Node.js 22+
+  - Tesseract OCR installed on your system:
+    - **Windows:** [Download installer](https://github.com/UB-Mannheim/tesseract/wiki)
+    - **macOS:** `brew install tesseract`
+    - **Linux:** `sudo apt install tesseract-ocr`
 
 ## How It Works
 
 1. **Upload** — User selects a PDF via the frontend (drag-and-drop or file browser)
 2. **Route** — nginx proxies all `/api/*` requests to the FastAPI backend
 3. **Extract** — Backend checks if OCR is requested:
-    - **Standard:** PyMuPDF reads embedded text directly from the PDF ⚡ Fast
-    - **OCR:** PyMuPDF converts each page to an image → Tesseract reads the text 🐢 Slower but handles scanned documents
+   - **Standard:** PyMuPDF reads embedded text directly from the PDF ⚡ Fast
+   - **OCR:** PyMuPDF converts each page to an image → Tesseract reads the text 🐢 Slower but handles scanned documents
 4. **Response** — Extracted text is returned as JSON to the frontend
 5. **Display** — User can copy the text or download it as a `.txt` file
 
@@ -66,6 +74,7 @@ uvicorn app.main:app --reload --port 3000
 
 ```bash
 cd frontend
+cp .env.local       # add VITE_API_URL=http://localhost:3000
 npm install
 npm run dev
 ```
@@ -86,16 +95,20 @@ pytest
 
 ```
 pdf-text-extractor/
-├── frontend/               # React app (TypeScript + Material-UI)
+├── .github/
+│   └── workflows/
+│       └── ci.yml              # GitHub Actions CI pipeline
+├── frontend/                   # React app (TypeScript + Material-UI)
 │   ├── src/
-│   ├── nginx.conf          # nginx config for routing & reverse proxy
+│   ├── .env.local              # env variables (e.g. VITE_API_URL=http://localhost:3000)
+│   ├── nginx.conf              # nginx config for routing & reverse proxy
 │   └── Dockerfile
-├── backend/                # FastAPI app (Python)
+├── backend/                    # FastAPI app (Python)
 │   ├── app/
-│   │   ├── main.py         # API entry point & routes
-│   │   ├── extractor.py    # PyMuPDF standard extraction logic
-│   │   └── ocr.py          # Tesseract OCR extraction logic
-│   ├── requirements.txt    # pytesseract, Pillow, pymupdf, fastapi...
+│   │   ├── main.py             # API entry point & routes
+│   │   ├── extractor.py        # PyMuPDF standard extraction logic
+│   │   └── ocr.py              # Tesseract OCR extraction logic
+│   ├── requirements.txt        # pytesseract, Pillow, pymupdf, fastapi...
 │   └── Dockerfile
 ├── docker-compose.yml
 └── README.md
