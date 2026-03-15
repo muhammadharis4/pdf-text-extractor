@@ -2,7 +2,6 @@
 
 A web application to extract text content from PDF files, with optional OCR support for scanned documents.
 
-![screenshot](screenshots/app.png) <!-- optional -->
 
 ## Features
 
