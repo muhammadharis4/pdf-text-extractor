@@ -4,28 +4,32 @@ import {
     Card,
     CardContent,
     Typography,
-    Button,
     Divider,
+    IconButton,
+    Tooltip,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
+import ReplayIcon from "@mui/icons-material/Replay";
 import type { ExtractResponse } from "../types";
 
 // Interface for ExtractedText component props
 interface Props {
     result: ExtractResponse;
     onReset: () => void;
+    onRerun: () => void;
 }
 
 /**
- * ExtractedText component to display the extracted text from the PDF along with options to copy, download, or reset.
+ * ExtractedText component to display the extracted text from the PDF along with options to copy, download, rerun, or reset.
  * @param result The result object containing filename, pages, and extracted text
  * @param onReset Callback function to reset the view and allow new uploads
+ * @param onRerun Callback function to re-extract with current mode
  * @returns
  */
-export default function ExtractedText({ result, onReset }: Props) {
+export default function ExtractedText({ result, onReset, onRerun }: Props) {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -60,36 +64,35 @@ export default function ExtractedText({ result, onReset }: Props) {
                             {result.pages === 1 ? "page" : "pages"}
                         </Typography>
                     </Box>
-                    <Box display="flex" gap={1}>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={
-                                copied ? <CheckIcon /> : <ContentCopyIcon />
-                            }
-                            onClick={handleCopy}
-                            color={copied ? "success" : "primary"}
-                        >
-                            {copied ? "Copied!" : "Copy Text"}
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<DownloadIcon />}
-                            onClick={handleDownload}
-                            color="primary"
-                        >
-                            Download .txt
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<CloseIcon />}
-                            onClick={onReset}
-                            color="error"
-                        >
-                            Close
-                        </Button>
+
+                    {/* Icon buttons only */}
+                    <Box display="flex" gap={0.5}>
+                        <Tooltip title={copied ? "Copied!" : "Copy text"}>
+                            <IconButton
+                                onClick={handleCopy}
+                                color={copied ? "success" : "default"}
+                            >
+                                {copied ? <CheckIcon /> : <ContentCopyIcon />}
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Download .txt">
+                            <IconButton
+                                onClick={handleDownload}
+                                color="default"
+                            >
+                                <DownloadIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Re-extract with current mode">
+                            <IconButton onClick={onRerun} color="primary">
+                                <ReplayIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Close">
+                            <IconButton onClick={onReset} color="error">
+                                <CloseIcon />
+                            </IconButton>
+                        </Tooltip>
                     </Box>
                 </Box>
 

@@ -7,16 +7,26 @@ import AppSnackbar from "./components/AppSnackbar";
 import { extractPdfText } from "./services/api";
 import type { ExtractResponse } from "./types";
 
+// Type for managing snackbar state
 type SnackbarState = {
     open: boolean;
     message: string;
     severity: "success" | "error";
 };
 
+/**
+ * Main App component that manages the overall state and flow of the PDF text extraction application.
+ * Handles file uploads, API interactions, and displays results and notifications.
+ * Key functionalities:
+ * - Manages loading and progress states during file upload and processing
+ * - Stores the extracted text result and current file for potential re-processing
+ * @returns
+ */
 export default function App() {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [result, setResult] = useState<ExtractResponse | null>(null);
+    const [currentFile, setCurrentFile] = useState<File | null>(null);
     const [extractMode, setExtractMode] = useState<"standard" | "ocr">(
         "standard",
     );
@@ -31,6 +41,7 @@ export default function App() {
     };
 
     const handleUpload = async (file: File) => {
+        setCurrentFile(file);
         setLoading(true);
         setResult(null);
         setProgress(0);
@@ -58,7 +69,16 @@ export default function App() {
         }
     };
 
-    const handleReset = () => setResult(null);
+    // Clears result and current file
+    const handleReset = () => {
+        setResult(null);
+        setCurrentFile(null);
+    };
+
+    // Re-runs extraction with the stored file and current mode
+    const handleRerun = async () => {
+        if (currentFile) await handleUpload(currentFile);
+    };
 
     return (
         <>
@@ -91,7 +111,11 @@ export default function App() {
                         onExtractModeChange={setExtractMode}
                     />
                     {result && (
-                        <ExtractedText result={result} onReset={handleReset} />
+                        <ExtractedText
+                            result={result}
+                            onReset={handleReset}
+                            onRerun={handleRerun}
+                        />
                     )}
                 </Box>
             </Container>
