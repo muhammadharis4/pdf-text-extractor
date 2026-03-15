@@ -7,6 +7,8 @@ import type { ExtractResponse } from "../types";
  * - extractPdfText: Extract text from a PDF file, with optional OCR.
  * baseURL is set from environment variable VITE_API_URL or defaults to http://localhost:3000/api
  */
+console.log("API URL:", import.meta.env.VITE_API_URL);
+console.log("All env vars:", import.meta.env);
 const api = axios.create({
     baseURL: `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api`,
 });
