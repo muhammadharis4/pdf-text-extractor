@@ -168,6 +168,7 @@ export default function FileUpload({
                             Max file size: {MAX_SIZE_MB}MB · PDF only
                         </Typography>
 
+                        {/* Selected File Display */}
                         {selectedFile && (
                             <Chip
                                 icon={<InsertDriveFileIcon />}

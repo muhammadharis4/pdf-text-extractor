@@ -27,6 +27,7 @@ export default function App() {
     const [progress, setProgress] = useState(0);
     const [result, setResult] = useState<ExtractResponse | null>(null);
     const [currentFile, setCurrentFile] = useState<File | null>(null);
+    const [fileUploadKey, setFileUploadKey] = useState(0);
     const [extractMode, setExtractMode] = useState<"standard" | "ocr">(
         "standard",
     );
@@ -73,6 +74,7 @@ export default function App() {
     const handleReset = () => {
         setResult(null);
         setCurrentFile(null);
+        setFileUploadKey((k) => k + 1); // Force re-mount FileUpload to clear its state
     };
 
     // Re-runs extraction with the stored file and current mode
@@ -103,6 +105,7 @@ export default function App() {
                     </Typography>
 
                     <FileUpload
+                        key={fileUploadKey}
                         onUpload={handleUpload}
                         onError={(msg) => showSnackbar(msg, "error")}
                         loading={loading}
