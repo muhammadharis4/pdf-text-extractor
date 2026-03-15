@@ -78,7 +78,7 @@ Visit: [[**http://localhost:5173**](http://localhost:5173)](http://localhost:517
 
 ```bash
 cd backend
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 pytest
 ```
 
