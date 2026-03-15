@@ -8,7 +8,7 @@ import type { ExtractResponse } from "../types";
  * baseURL is set from environment variable VITE_API_URL or defaults to http://localhost:3000/api
  */
 const api = axios.create({
-    baseURL: `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api`,
+    baseURL: `${import.meta.env.VITE_API_URL || ""}/api`,
 });
 
 /**
