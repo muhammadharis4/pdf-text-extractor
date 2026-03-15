@@ -24,7 +24,7 @@ A web application to extract text content from PDF files, with optional OCR supp
 - **Docker & Docker Compose** _(recommended — no manual installs needed)_
 - **OR** if running locally without Docker:
     - Python 3.11+
-    - Node.js 18+
+    - Node.js 20+
     - Tesseract OCR installed on your system:
         - **Windows:** [Download installer](https://github.com/UB-Mannheim/tesseract/wiki)
         - **macOS:** `brew install tesseract`
