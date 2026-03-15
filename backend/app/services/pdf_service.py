@@ -4,7 +4,9 @@ from fastapi import HTTPException
 from app.config import settings
 from app.logger import get_logger
 import pytesseract
-from pdf2image import convert_from_bytes
+import fitz
+from PIL import Image
+import io
 
 logger = get_logger(__name__)
 
@@ -13,11 +15,11 @@ class PDFService:
     @staticmethod
     def validate_pdf(filename: str, file_size: int) -> None:
         logger.info(f"Validating file: {filename}, size: {file_size / 1024:.2f}KB")
-        
+
         if not filename.lower().endswith('.pdf'):
             logger.warning(f"Invalid file type: {filename}")
             raise HTTPException(status_code=400, detail="Only PDF files are allowed")
-        
+
         if file_size > settings.MAX_FILE_SIZE:
             logger.warning(f"File too large: {file_size / 1024 / 1024:.2f}MB")
             raise HTTPException(
@@ -45,13 +47,19 @@ class PDFService:
     async def extract_text_ocr(pdf_bytes: bytes) -> dict:
         try:
             logger.info("Starting PDF text extraction (OCR)")
-            images = convert_from_bytes(pdf_bytes)
-            text_parts = [pytesseract.image_to_string(image) for image in images]
-            logger.info(f"OCR extraction complete: {len(images)} pages processed")
+            doc = fitz.open(stream=pdf_bytes, filetype="pdf")  # ✅ pymupdf, no poppler needed
+            text_parts = []
+
+            for page in doc:
+                pix = page.get_pixmap(dpi=300)
+                img = Image.open(io.BytesIO(pix.tobytes("png")))
+                text_parts.append(pytesseract.image_to_string(img))
+
+            logger.info(f"OCR extraction complete: {doc.page_count} pages processed")
 
             return {
                 "text": "\n".join(text_parts).strip(),
-                "pages": len(images)
+                "pages": doc.page_count
             }
         except Exception as e:
             logger.error(f"OCR extraction failed: {str(e)}")
