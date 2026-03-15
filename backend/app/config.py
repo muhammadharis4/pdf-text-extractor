@@ -4,7 +4,12 @@ class Settings(BaseSettings):
     APP_NAME: str = "PDF Text Extractor API"
     APP_VERSION: str = "1.0.0"
     API_PREFIX: str = "/api"
-    CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000"]
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:5173", # Vite default port
+        "http://localhost:3000", # React default port
+        "http://localhost:8080", # Port for docker frontend
+    ]
+
     MAX_FILE_SIZE: int = 10 * 1024 * 1024
 
     model_config = {
